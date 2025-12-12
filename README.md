@@ -928,3 +928,154 @@ When this is done, the activity reports:
 
 ---
 
+## 12.5.1 RS and RA Messages
+
+**ICMPv6 RS (Router Solicitation)**
+
+- Sent **by hosts** to the *all‑routers* multicast address.
+- Purpose: “Hi routers, I need addressing information.”
+- Triggers routers to reply sooner with an RA instead of waiting for the periodic timer.
+
+**ICMPv6 RA (Router Advertisement)**
+
+- Sent **by IPv6 routers** (typically every ~200 seconds) out router interfaces to the *all‑nodes* multicast address.
+- Can also be sent as a unicast reply to a received RS.
+- To make a router send RAs, IPv6 routing must be enabled, e.g.:
+
+  ```text
+  R1(config)# ipv6 unicast-routing
+  ```
+
+- An RA tells a host **how to get a GUA**. It can include:
+  - **Network prefix and prefix length** (e.g. `2001:db8:acad:1::/64`)  
+  - **Default gateway address** – usually the router’s IPv6 LLA on that link  
+  - **DNS server addresses and domain name** (if configured)  
+
+**Three RA “methods” (how a host should behave):**
+
+1. **Method 1 – SLAAC only**
+   - Message meaning: “You have everything you need right here: prefix, prefix‑length, default gateway. Build your own IPv6 GUA.”
+2. **Method 2 – SLAAC + Stateless DHCPv6**
+   - Message meaning: “Use SLAAC for your GUA and default gateway, but ask a DHCPv6 server for *extra info* (DNS, domain name, etc.).”
+3. **Method 3 – Stateful DHCPv6 (no SLAAC)**
+   - Message meaning: “Ask a stateful DHCPv6 server for your IPv6 address and other info. I’ll still tell you the default gateway via RA.”
+
+---
+
+## 12.5.2 Method 1 – SLAAC
+
+**SLAAC = Stateless Address Autoconfiguration.**
+
+- Host receives RA with:
+  - **Prefix** (e.g. `2001:db8:acad:1::/64`)
+  - **Prefix length** (`/64`)
+  - **Default gateway** (router’s LLA, e.g. `fe80::1`)
+- Host **creates its own Interface ID**:
+  - Using **EUI‑64** OR
+  - A **random 64‑bit number** (privacy extension)
+- Final GUA example:
+
+  ```text
+  2001:db8:acad:1:fc99:47ff:fe75:cee0/64
+  ```
+
+- No DHCPv6 server needed; there is no central lease database (stateless).
+
+---
+
+## 12.5.3 Method 2 – SLAAC and Stateless DHCPv6
+
+- Router’s RA still provides:
+  - **Prefix + prefix length**
+  - **Default gateway** (router LLA)
+- Host uses **SLAAC** to create its IPv6 GUA.
+- RA tells the host: “You still need more information from DHCPv6.”
+- Host then contacts a **stateless DHCPv6 server**, which provides:
+  - **DNS server address(es)**
+  - **Domain name** and similar options
+- The **GUA is *not* allocated by DHCPv6** – only additional parameters are.
+
+---
+
+## 12.5.4 Method 3 – Stateful DHCPv6
+
+- Similar idea to **DHCP for IPv4**.
+- RA tells the host to use **stateful DHCPv6**:
+  - “I’m your default gateway, but get your IPv6 address and other info from the DHCPv6 server.”
+- Host sends a **DHCPv6 Solicit** to find a server.
+- Stateful DHCPv6 server:
+  - Allocates the **GUA** and keeps a **list of which host has which IPv6 address**.
+  - Also supplies **DNS servers, domain, etc.**
+- The **default gateway** address still comes from the **RA**, not from DHCPv6.
+
+---
+
+## 12.5.5 EUI‑64 Process vs Randomly Generated Interface IDs
+
+When a host uses SLAAC (Method 1 or 2), it must generate the **Interface ID** (last 64 bits). Two options:
+
+### Option 1 – EUI‑64 (based on MAC address)
+
+- Start with the **48‑bit MAC address** (e.g. `fc:99:47:75:ce:e0`).
+- Split into two 24‑bit halves (OUI and device ID).
+- Insert the fixed 16‑bit value **`fffe`** in the middle → now 64 bits.
+- **Flip the 7th bit** (U/L bit) of the first byte:
+  - If it was 0 (universally administered), set to 1 (locally administered).
+- Example result: Interface ID `fc99:47ff:fe75:cee0`.
+- Combine with prefix from RA → full GUA:
+
+  ```text
+  2001:db8:acad:1:fc99:47ff:fe75:cee0/64
+  ```
+
+**Pros:**  
+- Direct relationship between MAC address and IPv6 Interface ID; easy for admins to map addresses to devices.
+
+**Cons:**  
+- Privacy concern: IPv6 address can effectively reveal the device’s **MAC**, making long‑term tracking easier.
+
+### Option 2 – Random 64‑bit Interface ID (Privacy Extensions)
+
+- Host generates a **random 64‑bit value** instead of using MAC.
+- Example Interface ID: `50a5:8a35:a5bb:66e1`
+
+  ```text
+  2001:db8:acad:1:50a5:8a35:a5bb:66e1/64
+  ```
+
+- Helps prevent tracking of a host based solely on its MAC‑derived Interface ID.
+- Modern OSes (Windows Vista and later, many Linux/macOS) **use random IIDs by default**.
+
+**Duplicate Address Detection (DAD)**
+
+- After forming a GUA, host must ensure it is **unique on the link**.
+- Sends an ICMPv6 **Neighbor Solicitation** for its own address:
+  - If no reply → address is unique and can be used.
+  - If reply → conflict detected; host must choose another Interface ID.
+
+---
+
+## 12.5.8 Check Your Understanding – Dynamic Addressing for IPv6 GUAs
+
+> **Question 1** – True or False?  
+> RA messages are sent to all IPv6 routers by hosts requesting addressing information.
+
+- **Correct answer:** `False`  
+  - **RS** (Router Solicitation) messages are sent by **hosts** to **routers** to request addressing info.  
+  - **RA** (Router Advertisement) messages are sent by **routers** to **hosts** with the addressing details.
+
+(Other quiz questions will be added here as I encounter them.)
+
+---
+
+## Quick Comparison Table
+
+| Method | Who creates the GUA?        | Where does host get prefix + default gateway? | Extra info source (DNS etc.) | Central lease DB? |
+|-------|------------------------------|-----------------------------------------------|------------------------------|-------------------|
+| 1 – SLAAC | Host (EUI‑64 or random IID) | RA (router)                                   | None                         | No (stateless)    |
+| 2 – SLAAC + Stateless DHCPv6 | Host (EUI‑64 or random IID) | RA (router)                                   | Stateless DHCPv6 server      | No (stateless)    |
+| 3 – Stateful DHCPv6 | DHCPv6 server                | RA (router) – default gateway only            | Same stateful DHCPv6 server  | Yes (stateful)    |
+
+---
+
+
