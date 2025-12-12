@@ -341,7 +341,590 @@ Options:
 
 ---
 
-<!--
-Next sections (12.2–12.9) will follow the same style: concise theory notes +
-Q&A with explanations for each “Check Your Understanding” / quiz block.
--->
+## 12.2 IPv6 Address Representation  
+
+> **Big idea:** IPv6 addresses are 128‑bit hex strings. We almost never write the full 32 hex digits because there are rules to shorten them safely.  
+
+### 12.2.1 IPv6 Addressing Formats  
+
+- IPv6 address length: **128 bits**.  
+- Written as **8 groups of 16 bits** (hextets), separated by colons (`:`).  
+- Each hextet = **4 hexadecimal digits** → 16 bits.  
+- Hex digits are **0–9** and **a–f** (not case‑sensitive).  
+
+**Example – preferred (full) format**  
+
+- Binary (concept): 128 bits total.  
+- Hex (preferred):  
+
+  ```text
+  2001:0db8:0000:0000:0000:0000:0000:0200
+  ```
+
+Terminology:  
+
+- **Hextet** – informal term for a 16‑bit chunk of an IPv6 address (4 hex digits).  
+- **Preferred format** – full, unshortened 8×4‑hex notation.  
+- We shorten it using **Rule 1** and **Rule 2**.  
+
+---
+
+### 12.2.2 Rule 1 – Omit Leading Zeros  
+
+> **Rule 1:** Within any hextet, you may **omit one or more leading `0`s**.  
+> You **must not** omit trailing zeros, or mix up the number of hex digits.  
+
+Examples (single hextet):  
+
+- `01ab` → `1ab`  
+- `09f0` → `9f0`  
+- `0a00` → `a00`  
+- `00ab` → `ab`  
+
+This rule applies **independently per hextet**.  
+
+**Whole‑address examples**  
+
+Preferred vs “no leading 0s” (short form):  
+
+| Preferred format                              | Omit leading zeros              |
+|----------------------------------------------|---------------------------------|
+| `2001:0db8:0000:1111:0000:0000:0000:0200`    | `2001:db8:0:1111:0:0:0:200`     |
+| `2001:0db8:0000:00a3:ab00:0ab0:000b:1234`    | `2001:db8:0:a3:ab00:ab0:b:1234` |
+| `2001:0db8:000a:0001:0c01:90ff:fe90:0001`    | `2001:db8:a:1:c01:90ff:fe90:1`  |
+| `fe80:0000:0000:0000:0123:4567:89ab:cdef`    | `fe80:0:0:0:123:4567:89ab:cdef` |
+| `fe80:0000:0000:0000:0000:0000:0000:0001`    | `fe80:0:0:0:0:0:0:1`            |
+| `0000:0000:0000:0000:0000:0000:0000:0001`    | `0:0:0:0:0:0:0:1`               |
+| `0000:0000:0000:0000:0000:0000:0000:0000`    | `0:0:0:0:0:0:0:0`               |
+
+Key points for Rule 1:  
+
+- You always keep **between 1 and 4 hex digits per hextet**.  
+- This rule alone **does not** change the number of hextets (still 8).  
+
+---
+
+### 12.2.3 Rule 2 – Double Colon  
+
+> **Rule 2:** You may replace **one single, contiguous run of all‑zero hextets** with the double colon `::`.  
+
+Guidelines:  
+
+1. `::` can represent **one or more** `0000` hextets, but **only once per address**.  
+2. Use it on the **longest** sequence of all‑zero hextets. If there’s a tie, it’s your choice, but RFC practice is to use the **leftmost** longest run.  
+3. Combining Rule 1 and Rule 2 gives the **compressed** form.  
+
+**Incorrect example from the course**  
+
+- Wrong: `2001:db8::abcd::1234` (two `::` → ambiguous).  
+
+Possible (different) expansions would be:  
+
+- `2001:db8:0000:0000:abcd:0000:0000:1234`  
+- `2001:db8:0000:abcd:0000:0000:0000:1234`  
+- etc. → more than one answer ⇒ **not allowed**.  
+
+**Correct compression examples**  
+
+| Type                | Format example                                                  |
+|---------------------|-----------------------------------------------------------------|
+| Preferred           | `2001:0db8:0000:1111:0000:0000:0000:0200`                       |
+| Compressed/spaces   | `2001:db8:0:1111:0:0:0:200`                                     |
+| Compressed (final)  | `2001:db8:0:1111::200`                                          |
+| Preferred           | `2001:0db8:0000:0000:ab00:0000:0000:0000`                       |
+| Compressed/spaces   | `2001:db8:0:0:ab00::`                                           |
+| Compressed (final)  | `2001:db8::ab00:0:0:0`  **or** `2001:db8:0:0:ab00::` (leftmost) |
+| Preferred           | `fe80:0000:0000:0000:0123:4567:89ab:cdef`                       |
+| Compressed/spaces   | `fe80:0:0:0:123:4567:89ab:cdef`                                 |
+| Compressed (final)  | `fe80::123:4567:89ab:cdef`                                      |
+| Preferred           | `fe80:0000:0000:0000:0000:0000:0000:0001`                       |
+| Compressed/spaces   | `fe80:0:0:0:0:0:0:1`                                            |
+| Compressed (final)  | `fe80::1`                                                       |
+| Preferred           | `0000:0000:0000:0000:0000:0000:0000:0001`                       |
+| Compressed/spaces   | `::1`                                                           |
+| Compressed (final)  | `::1` (loopback)                                                |
+| Preferred           | `0000:0000:0000:0000:0000:0000:0000:0000`                       |
+| Compressed/spaces   | `::`                                                            |
+| Compressed (final)  | `::` (unspecified address)                                      |
+
+**Rule‑of‑thumb summary**  
+
+- Apply **Rule 1** first (drop leading zeros in each hextet).  
+- Then apply **Rule 2** (replace the single longest run of `0` hextets with `::`).  
+- You may never use more than **one** `::` in any IPv6 address.  
+
+---
+
+### 12.2.4 Check Your Understanding – IPv6 Address Representation  
+
+> These are practice conversions based on the 12.2.4 activity.  
+> Answers are written in lowercase, as NetAcad requires in that activity.
+
+#### Example 1  
+
+Preferred:  
+
+```text
+fe80:0000:0000:0000:0000:0000:0101:1111
+```
+
+- **Omit leading zeroes:** `fe80:0:0:0:0:0:101:1111`  
+- **Compressed format:** `fe80::101:1111`  
+
+#### Example 2  
+
+Preferred:  
+
+```text
+2001:0db8:0000:0000:0000:abcd:0000:0001
+```
+
+- **Omit leading zeroes:** `2001:db8:0:0:0:abcd:0:1`  
+- **Compressed format:** `2001:db8::abcd:0:1` or `2001:db8:0:0:0:abcd::1`  
+  - Using the **leftmost longest zero‑run**, we normally write: **`2001:db8::abcd:0:1`**.  
+
+#### Example 3  
+
+Preferred:  
+
+```text
+0000:0000:0000:0000:0000:0000:0000:0000
+```
+
+- **Omit leading zeroes:** `0:0:0:0:0:0:0:0`  
+- **Compressed format:** `::`  
+
+> **Exam skill:** For any given IPv6 address, be able to:  
+> 1. Write the full preferred version (expand).  
+> 2. Write the shortest valid compressed version (shrink).  
+
+---
+
+## 12.3 IPv6 Address Types  
+
+> **Big idea:** IPv6 improves addressing by defining multiple unicast types, rich multicast, and anycast. IPv6 has **no broadcast** at all.  
+
+### 12.3.1 Unicast, Multicast, Anycast  
+
+Three broad categories of IPv6 addresses:  
+
+- **Unicast**  
+  - Identifies **a single interface**.  
+  - Packets are delivered to **one** IPv6-enabled device.  
+  - Examples: GUA, LLA, ULA, loopback, etc.  
+
+- **Multicast**  
+  - Identifies **a group of devices**.  
+  - Packets sent to a multicast address are delivered to **all interfaces** that joined that group.  
+  - Replaces IPv4 broadcast functionality.  
+
+- **Anycast**  
+  - A unicast address that is **assigned to multiple interfaces** (usually on different routers).  
+  - Packets are delivered to the **nearest** device (in routing terms).  
+  - Anycast operation is **beyond the scope** of this CCNA module but good to know conceptually.  
+
+**Important:** IPv6 has **no broadcast address**. Instead, it uses **IPv6 all‑nodes multicast** (e.g. `ff02::1`) to reach all nodes on a link.  
+
+---
+
+### 12.3.2 IPv6 Prefix Length  
+
+- IPv6 also uses **prefix length notation** (`/n`) instead of dotted‑decimal masks.  
+- The prefix indicates the **network portion**; the remaining bits are the **interface ID** (host part).  
+- Common LAN prefix: **`/64`**.  
+
+Example:  
+
+```text
+2001:db8:a::/64
+```
+
+- First 64 bits (`2001:0db8:000a:0000`) → **prefix**.  
+- Last 64 bits (`0000:0000:0000:0000`) → **interface ID**.  
+
+Why `/64` is recommended:  
+
+- SLAAC (Stateless Address Autoconfiguration) assumes **64‑bit interface IDs**.  
+- `/64` makes subnetting in IPv6 simple and consistent.  
+
+---
+
+### 12.3.3 Types of IPv6 Unicast Addresses  
+
+An IPv6 **unicast address** uniquely identifies an interface. A packet sent to a unicast address is received by that specific interface.  
+
+Main IPv6 unicast types:  
+
+1. **Global Unicast Address (GUA)**  
+   - Equivalent to IPv4 **public** addresses.  
+   - Globally unique, Internet‑routable.  
+   - Assigned statically or dynamically (SLAAC/DHCPv6).  
+   - Typical prefix: `2000::/3` (addresses starting with `2` or `3`).  
+
+2. **Link‑local Address (LLA)**  
+   - Required on every IPv6‑enabled interface.  
+   - Used to communicate **on the local link only** (non‑routable).  
+   - Always in `fe80::/10` (e.g. `fe80::1`, `fe80::abcd:1234`).  
+   - Routers never forward packets with LLA as source or destination.  
+
+3. **Loopback Address**  
+   - Used to test the local TCP/IP stack.  
+   - Single address: **`::1/128`**.  
+
+4. **Unspecified Address**  
+   - All zeros: **`::/128`**.  
+   - Used by a host when it does not yet know its own address (e.g. as a source during DHCPv6).  
+   - Never appears as a destination.  
+
+5. **Unique Local Address (ULA)**  
+   - Like IPv4 private addresses (for internal use, not globally routed).  
+   - Range: **`fc00::/7`** to **`fdff::/7`**.  
+   - Commonly written as `fdxx:xxxx:...`.  
+
+6. **Embedded IPv4 addresses**  
+   - Special formats used in transition mechanisms (outside main CCNA focus).  
+
+Most IPv6 interfaces will have **at least two unicast addresses**: a **GUA** + a **link‑local**.  
+
+---
+
+### 12.3.4 A Note About the Unique Local Address  
+
+Unique Local Addresses (ULAs):  
+
+- Range: **`fc00::/7` to `fdff::/7`**.  
+- Intended for:  
+  - Local addressing **within a site** or between a small number of sites.  
+  - Devices that **never need global Internet access** (e.g. internal servers, printers).  
+- Properties vs IPv4 private addresses (RFC 1918):  
+  - Both are for non‑public addressing.  
+  - ULAs are **not globally routed** or translated to GUAs.  
+  - ULAs are designed to be globally unique if generated properly (using random 40‑bit Global ID).  
+
+Note from the course: many networks still rely mostly on GUAs + LLAs today; ULAs are less commonly implemented but may become more common over time.  
+
+---
+
+### 12.3.5 IPv6 GUA  
+
+Global Unicast Addresses (GUAs):  
+
+- Globally unique, Internet‑routable IPv6 addresses.  
+- Allocated by IANA → RIRs → ISPs → organizations.  
+- Current GUA allocation range: addresses with the first three bits `001`, i.e. **`2000::/3`**.  
+
+That means:  
+
+- Smallest current GUA block: `2000::`  
+- Largest within that /3: `3fff:ffff:...`  
+
+A typical enterprise allocation example:  
+
+- Organization receives `2001:db8:acad::/48` as its **global routing prefix**.  
+- It can then subnet further using the **Subnet ID** field.  
+
+---
+
+### 12.3.6 IPv6 GUA Structure  
+
+Typical structure (for a `/64` prefix):  
+
+```text
+|<------ 48 bits ------>|<-16->|<------------ 64 bits ------------>|
++-----------------------+------+-----------------------------------+
+| Global Routing Prefix | Subn |          Interface ID             |
++-----------------------+------+-----------------------------------+
+```
+
+- **Global Routing Prefix**  
+  - Assigned by the ISP or provider.  
+  - Identifies the **site/network** on the global Internet.  
+  - Example: `2001:db8:acad::/48` – here `2001:db8:acad` is the global routing prefix.  
+
+- **Subnet ID**  
+  - Used **inside the organization** to identify internal subnets.  
+  - With `/48` global prefix and `/64` per subnet, there are **16 bits** for the Subnet ID.  
+  - That gives `2^16 = 65,536` subnets, each with `2^64` addresses.  
+
+- **Interface ID**  
+  - The remaining **64 bits**, equivalent to the host portion in IPv4.  
+  - Can be generated via **EUI‑64** or **random** 64‑bit value.  
+  - Recommended to keep `/64` interface IDs for SLAAC compatibility.  
+
+Design notes:  
+
+- Some organizations get `/32` prefixes, leaving **32 bits** for Subnet ID (massive scaling).  
+- In IPv6, unlike IPv4, the “all‑zeros” and “all‑ones” interface IDs are valid, not reserved for network/broadcast.  
+
+---
+
+### 12.3.7 IPv6 LLA  
+
+Link‑local addresses (LLAs):  
+
+- Address range: **`fe80::/10`** (from `fe80::` to `febf:ffff:...`).  
+- Purpose: communication **only on the local link** (local network segment).  
+- Every IPv6-enabled interface **must have an LLA**.  
+
+How LLAs are used:  
+
+- Host ↔ default‑gateway router communication on the same link.  
+- Routing protocol neighbor communication between routers (e.g. OSPFv3, EIGRP for IPv6).  
+
+LLAs can be:  
+
+- **Statically configured**, e.g.:  
+
+  ```text
+  interface g0/0
+   ipv6 address fe80::1 link-local
+  ```
+
+- **Dynamically created** by the device:  
+  - Device takes its MAC or a random value and builds a 64‑bit interface ID in the `fe80::/10` range.  
+
+Important behaviour:  
+
+- Packets with source or destination LLA are **never forwarded** by routers beyond that link.  
+- Typically, hosts use the **router’s LLA** (not its GUA) as their default gateway address.  
+
+---
+
+### 12.3.8 Check Your Understanding – IPv6 Address Types  
+
+> These are the key “Check Your Understanding” ideas from 12.3.  
+
+#### Q1 – Recommended Prefix Length for Most IPv6 Subnets  
+
+**Question:**  
+What is the recommended prefix length for most IPv6 subnets?  
+
+**Answer:** ✅ **`/64`**  
+
+**Reasoning:** SLAAC and most modern designs expect **64‑bit interface IDs**, which implies a `/64` prefix. This simplifies address autoconfiguration and subnetting.  
+
+---  
+
+#### Q2 – Which Part of a GUA Is Assigned by the ISP?  
+
+**Question:**  
+Which part of a Global Unicast Address (GUA) is assigned by the ISP?  
+
+Options (from the activity):  
+
+- Global routing prefix  
+- Global routing prefix and subnet ID  
+- RIR prefix  
+- Prefix  
+
+**Answer:** ✅ **Global routing prefix**  
+
+**Reasoning:**  
+
+- IANA allocates large IPv6 blocks to **RIRs**.  
+- RIRs allocate to **ISPs**.  
+- ISP then assigns a **global routing prefix** (e.g. `/48` or `/56`) to the customer.  
+- The **customer** uses the **Subnet ID** bits under that prefix to create internal subnets.  
+
+---  
+## 12.4.1 Static GUA Configuration on a Router
+
+**Concepts**
+
+- IPv6 **Global Unicast Addresses (GUAs)** are the IPv6 version of public IPv4 addresses:
+  - Globally unique and routable on the internet.
+  - Typically start with `2` or `3` (e.g. `2001:db8::/32` for documentation).
+- In IOS, IPv4 vs IPv6 interface commands differ only slightly:  
+  - IPv4: `ip address <ipv4-address> <mask>`  
+  - IPv6: `ipv6 address <ipv6-address>/<prefix-length>`
+
+**Key points**
+
+- You can have **multiple IPv6 addresses per interface** (e.g. one GUA + one LLA).
+- No space between address and prefix length.
+- After configuring IPv6 addresses you must still use `no shutdown` to enable the interface.
+
+**Example topology GUAs**
+
+- `2001:db8:acad:1::/64` – LAN 1 (PC1)  
+- `2001:db8:acad:2::/64` – LAN 2 (PC2)  
+- `2001:db8:acad:3::/64` – WAN / serial link  
+
+**Example IOS config – GUAs only**
+
+```text
+R1(config)# interface g0/0/0
+R1(config-if)# ipv6 address 2001:db8:acad:1::1/64
+R1(config-if)# no shutdown
+R1(config-if)# exit
+
+R1(config)# interface g0/0/1
+R1(config-if)# ipv6 address 2001:db8:acad:2::1/64
+R1(config-if)# no shutdown
+R1(config-if)# exit
+
+R1(config)# interface s0/1/0
+R1(config-if)# ipv6 address 2001:db8:acad:3::1/64
+R1(config-if)# no shutdown
+R1(config-if)# exit
+```
+
+**Interview sound-bite**
+
+> “On Cisco IOS, IPv6 GUAs are configured per interface with  
+> `ipv6 address <GUA>/<prefix>`, and each interface can hold several IPv6
+> addresses (GUA + LLA) at the same time.”
+
+---
+
+## 12.4.2 Static GUA Configuration on a Windows Host
+
+**Concepts**
+
+- Manually configuring IPv6 on a host is similar to IPv4:
+  - IPv6 address + prefix length (instead of dotted mask).
+  - Default gateway address (usually the **router’s LLA**).
+- Static addressing **does not scale** in large networks, but is useful for:
+  - Labs
+  - Servers that require fixed addresses
+  - Troubleshooting
+
+**Example PC1 config (from the IPv6 properties dialog)**
+
+- **IPv6 address:** `2001:db8:acad:1::10`  
+- **Subnet prefix length:** `64`  
+- **Default gateway:** `2001:db8:acad:1::1` (or the router’s `fe80::1:1` LLA)  
+
+**Key takeaways**
+
+- Windows lets you choose either:
+  - *Obtain an IPv6 address automatically* (SLAAC/DHCPv6), or  
+  - *Use the following IPv6 address* (static).
+- In real networks, hosts usually obtain GUAs dynamically (**SLAAC** or **DHCPv6**).
+
+---
+
+## 12.4.3 Static Configuration of a Link-Local Unicast Address
+
+**Concepts**
+
+- Every IPv6-enabled interface **must** have a **Link-Local Address (LLA)**:
+  - Scope: only the **local link** (LAN segment).  
+  - Prefix: `FE80::/10` (e.g. `fe80::1:1`).  
+  - Not routable beyond the local link.
+- Routers commonly use LLAs as:
+  - Default gateway addresses for hosts.
+  - Source/destination for routing protocol messages (OSPFv3, EIGRP for IPv6, etc.).
+
+**IOS command pattern**
+
+```text
+ipv6 address <link-local-address> link-local
+```
+
+> The keyword `link-local` is mandatory when the address starts with `fe80::`.
+
+**Example topology LLAs**
+
+- R1 G0/0/0 – `fe80::1:1`  
+- R1 G0/0/1 – `fe80::2:1`  
+- R1 S0/1/0 – `fe80::3:1`  
+
+**Example IOS config – LLAs only**
+
+```text
+R1(config)# interface g0/0/0
+R1(config-if)# ipv6 address fe80::1:1 link-local
+R1(config-if)# exit
+
+R1(config)# interface g0/0/1
+R1(config-if)# ipv6 address fe80::2:1 link-local
+R1(config-if)# exit
+
+R1(config)# interface s0/1/0
+R1(config-if)# ipv6 address fe80::3:1 link-local
+R1(config-if)# exit
+```
+
+**Best practice**
+
+- Use **easy-to-recognise LLAs** on routers (for humans), not random ones:
+  - e.g. `fe80::1:1`, `fe80::2:1`, `fe80::3:1` per interface.
+- Only needs to be **unique on the link**, not globally unique.
+
+---
+
+## 12.4.4 Syntax Checker – GUA and LLA Static Configuration
+
+This section walks through configuring **both** LLAs and GUAs on all R1 interfaces.
+
+### Task summary
+
+For each interface:
+
+1. Enter interface config mode.  
+2. Configure the LLA with the `link-local` keyword.  
+3. Configure the GUA with prefix `/64`.  
+4. `no shutdown` to bring the interface up.  
+5. `exit` back to global config.
+
+### Final working configuration (from the activity)
+
+```text
+! G0/0/0
+R1(config)# interface g0/0/0
+R1(config-if)# ipv6 address fe80::1:1 link-local
+R1(config-if)# ipv6 address 2001:db8:acad:1::1/64
+R1(config-if)# no shutdown
+R1(config-if)# exit
+
+! G0/0/1
+R1(config)# interface g0/0/1
+R1(config-if)# ipv6 address fe80::2:1 link-local
+R1(config-if)# ipv6 address 2001:db8:acad:2::1/64
+R1(config-if)# no shutdown
+R1(config-if)# exit
+
+! Serial 0/1/0
+R1(config)# interface s0/1/0
+R1(config-if)# ipv6 address fe80::3:1 link-local
+R1(config-if)# ipv6 address 2001:db8:acad:3::1/64
+R1(config-if)# no shutdown
+R1(config-if)# exit
+
+R1(config)#  ! end of IPv6 interface config
+```
+
+When this is done, the activity reports:  
+> *“You successfully configured IPv6 GUAs on the interfaces of router R1.”*
+
+**What this proves (for recruiters)**
+
+- I can configure **dual IPv6 addresses per interface** (LLA + GUA).  
+- I understand which commands are needed to actually **activate** the interface
+  and make the addresses usable.
+
+---
+
+## 12.4.5 Packet Tracer – Basic Device Configuration
+
+**Activity goal**
+
+- Configure:
+  - Router hostname, security (passwords, banner), and **IPv4 + IPv6** addresses.
+  - Switch basic settings and management IP (VLAN 1).
+  - PC NIC IPv4 and IPv6 addresses and default gateways.
+- Verify **end-to-end IPv4 and IPv6 connectivity** between all devices using `ping`.
+
+**What I practise here**
+
+- Filling an addressing table for multiple topologies.
+- Applying a consistent **baseline config** on routers/switches (hostnames, passwords, banners).
+- Assigning both IPv4 and IPv6 addresses on:
+  - Router interfaces (`g0/0`, `g0/1`, `s0/1/0`, etc.).
+  - Switch VLAN 1 SVI.
+  - PC NICs.
+- Testing the network and troubleshooting until **all devices can reach each other** with both protocols.
+
+---
+
