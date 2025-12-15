@@ -1,4 +1,5 @@
-# CCNA – IPv6 Addressing (Module 12)
+<a id="top"></a>
+# CCNA - IPv6 Addressing (Module 12)
 
 > **Use case:** This repo file is both a study guide for me (**EchoLynx**) and a
 > portfolio artifact for recruiters to see my understanding of **IPv6
@@ -28,7 +29,20 @@ I use this repo to revise:
 
 ---
 
+### Quick navigation
+- [Module map](#module-map)
+- [IPv6 address compression rules](#122-ipv6-address-representation)
+- [Address types (GUA/LLA/ULA/multicast)](#123-ipv6-address-types)
+- [Dynamic addressing (SLAAC/DHCPv6)](#125-dynamic-addressing-for-ipv6-guas)
+- [IPv6 multicast essentials](#127-ipv6-multicast-addresses)
+- [IPv6 subnetting (subnet ID)](#128-subnet-an-ipv6-network)
+
+
 ## Table of Contents
+
+<details>
+<summary>Click to expand</summary>
+
 
 - [Module 12 Overview](#module-12-overview)  
 - [Module Map](#module-map)  
@@ -40,13 +54,13 @@ I use this repo to revise:
 - [12.1 IPv4 Issues](#121-ipv4-issues)  
   - [12.1.1 Need for IPv6](#1211-need-for-ipv6)  
   - [12.1.2 IPv4 and IPv6 Coexistence](#1212-ipv4-and-ipv6-coexistence)  
-  - [12.1.3 Check Your Understanding – IPv4 Issues](#1213-check-your-understanding-ipv4-issues)  
+  - [12.1.3 Check Your Understanding - IPv4 Issues](#1213-check-your-understanding-ipv4-issues)  
 
 - [12.2 IPv6 Address Representation](#122-ipv6-address-representation)  
   - [12.2.1 IPv6 Addressing Formats](#1221-ipv6-addressing-formats)  
-  - [12.2.2 Rule 1 – Omit Leading Zeros](#1222-rule-1-omit-leading-zeros)  
-  - [12.2.3 Rule 2 – Double Colon](#1223-rule-2-double-colon)  
-  - [12.2.4 Check Your Understanding – IPv6 Address Representation](#1224-check-your-understanding-ipv6-address-representation)  
+  - [12.2.2 Rule 1 - Omit Leading Zeros](#1222-rule-1-omit-leading-zeros)  
+  - [12.2.3 Rule 2 - Double Colon](#1223-rule-2-double-colon)  
+  - [12.2.4 Check Your Understanding - IPv6 Address Representation](#1224-check-your-understanding-ipv6-address-representation)  
 
 - [12.3 IPv6 Address Types](#123-ipv6-address-types)  
   - [12.3.1 Unicast, Multicast, Anycast](#1231-unicast-multicast-anycast)  
@@ -56,54 +70,56 @@ I use this repo to revise:
   - [12.3.5 IPv6 GUA](#1235-ipv6-gua)  
   - [12.3.6 IPv6 GUA Structure](#1236-ipv6-gua-structure)  
   - [12.3.7 IPv6 LLA](#1237-ipv6-lla)  
-  - [12.3.8 Check Your Understanding – IPv6 Address Types](#1238-check-your-understanding-ipv6-address-types)  
+  - [12.3.8 Check Your Understanding - IPv6 Address Types](#1238-check-your-understanding-ipv6-address-types)  
 
 - [12.4 GUA and LLA Static Configuration](#124-gua-and-lla-static-configuration)  
   - [12.4.1 Static GUA Configuration on a Router](#1241-static-gua-configuration-on-a-router)  
   - [12.4.2 Static GUA Configuration on a Windows Host](#1242-static-gua-configuration-on-a-windows-host)  
   - [12.4.3 Static Configuration of a Link-Local Unicast Address](#1243-static-configuration-of-a-link-local-unicast-address)  
-  - [12.4.4 Syntax Checker – GUA and LLA Static Configuration](#1244-syntax-checker-gua-and-lla-static-configuration)  
-  - [12.4.5 Packet Tracer – Basic Device Configuration](#1245-packet-tracer-basic-device-configuration)  
+  - [12.4.4 Syntax Checker - GUA and LLA Static Configuration](#1244-syntax-checker-gua-and-lla-static-configuration)  
+  - [12.4.5 Packet Tracer - Basic Device Configuration](#1245-packet-tracer-basic-device-configuration)  
 
 - [12.5 Dynamic Addressing for IPv6 GUAs](#125-dynamic-addressing-for-ipv6-guas)  
   - [12.5.1 RS and RA Messages](#1251-rs-and-ra-messages)  
-  - [12.5.2 Method 1 – SLAAC](#1252-method-1-slaac)  
-  - [12.5.3 Method 2 – SLAAC and Stateless DHCPv6](#1253-method-2-slaac-and-stateless-dhcpv6)  
-  - [12.5.4 Method 3 – Stateful DHCPv6](#1254-method-3-stateful-dhcpv6)  
+  - [12.5.2 Method 1 - SLAAC](#1252-method-1-slaac)  
+  - [12.5.3 Method 2 - SLAAC and Stateless DHCPv6](#1253-method-2-slaac-and-stateless-dhcpv6)  
+  - [12.5.4 Method 3 - Stateful DHCPv6](#1254-method-3-stateful-dhcpv6)  
   - [12.5.5 EUI-64 Process vs. Randomly Generated Interface IDs](#1255-eui-64-process-vs-randomly-generated-interface-ids)  
   - [12.5.6 EUI-64 Process](#1256-eui-64-process)  
   - [12.5.7 Randomly Generated Interface IDs](#1257-randomly-generated-interface-ids)  
-  - [12.5.8 Check Your Understanding – Dynamic Addressing for IPv6 GUAs](#1258-check-your-understanding-dynamic-addressing-for-ipv6-guas)  
+  - [12.5.8 Check Your Understanding - Dynamic Addressing for IPv6 GUAs](#1258-check-your-understanding-dynamic-addressing-for-ipv6-guas)  
 
 - [12.6 Dynamic Addressing for IPv6 LLAs](#126-dynamic-addressing-for-ipv6-llas)  
   - [12.6.1 Dynamic LLAs](#1261-dynamic-llas)  
   - [12.6.2 Dynamic LLAs on Windows](#1262-dynamic-llas-on-windows)  
   - [12.6.3 Dynamic LLAs on Cisco Routers](#1263-dynamic-llas-on-cisco-routers)  
   - [12.6.4 Verify IPv6 Address Configuration](#1264-verify-ipv6-address-configuration)  
-  - [12.6.5 Syntax Checker – Verify IPv6 Address Configuration](#1265-syntax-checker-verify-ipv6-address-configuration)  
-  - [12.6.6 Packet Tracer – Configure IPv6 Addressing](#1266-packet-tracer-configure-ipv6-addressing)  
+  - [12.6.5 Syntax Checker - Verify IPv6 Address Configuration](#1265-syntax-checker-verify-ipv6-address-configuration)  
+  - [12.6.6 Packet Tracer - Configure IPv6 Addressing](#1266-packet-tracer-configure-ipv6-addressing)  
 
 - [12.7 IPv6 Multicast Addresses](#127-ipv6-multicast-addresses)  
   - [12.7.1 Assigned IPv6 Multicast Addresses](#1271-assigned-ipv6-multicast-addresses)  
   - [12.7.2 Well-Known IPv6 Multicast Addresses](#1272-well-known-ipv6-multicast-addresses)  
   - [12.7.3 Solicited-Node IPv6 Multicast Addresses](#1273-solicited-node-ipv6-multicast-addresses)  
-  - [12.7.4 Lab – Identify IPv6 Addresses](#1274-lab-identify-ipv6-addresses)  
+  - [12.7.4 Lab - Identify IPv6 Addresses](#1274-lab-identify-ipv6-addresses)  
 
 - [12.8 Subnet an IPv6 Network](#128-subnet-an-ipv6-network)  
   - [12.8.1 Subnet Using the Subnet ID](#1281-subnet-using-the-subnet-id)  
   - [12.8.2 IPv6 Subnetting Example](#1282-ipv6-subnetting-example)  
   - [12.8.3 IPv6 Subnet Allocation](#1283-ipv6-subnet-allocation)  
   - [12.8.4 Router Configured with IPv6 Subnets](#1284-router-configured-with-ipv6-subnets)  
-  - [12.8.5 Check Your Understanding – Subnet an IPv6 Network](#1285-check-your-understanding-subnet-an-ipv6-network)  
+  - [12.8.5 Check Your Understanding - Subnet an IPv6 Network](#1285-check-your-understanding-subnet-an-ipv6-network)  
 
 - [12.9 Module Practice and Quiz](#129-module-practice-and-quiz)  
-  - [12.9.1 Packet Tracer – Implement a Subnetted IPv6 Addressing Scheme](#1291-packet-tracer-implement-a-subnetted-ipv6-addressing-scheme)  
-  - [12.9.2 Lab – Configure IPv6 Addresses on Network Devices](#1292-lab-configure-ipv6-addresses-on-network-devices)  
+  - [12.9.1 Packet Tracer - Implement a Subnetted IPv6 Addressing Scheme](#1291-packet-tracer-implement-a-subnetted-ipv6-addressing-scheme)  
+  - [12.9.2 Lab - Configure IPv6 Addresses on Network Devices](#1292-lab-configure-ipv6-addresses-on-network-devices)  
   - [12.9.3 What did I learn in this module?](#1293-what-did-i-learn-in-this-module)  
-  - [12.9.4 Module Quiz – IPv6 Addressing](#1294-module-quiz-ipv6-addressing)  
+  - [12.9.4 Module Quiz - IPv6 Addressing](#1294-module-quiz-ipv6-addressing)  
 
 ---
 
+
+</details>
 ## Module 12 Overview
 
 > **Goal:** Be comfortable working in dual-stack networks, able to read, configure,
@@ -127,6 +143,9 @@ I use this repo to revise:
 | 12.9 Practice and Quiz           | IPv6 implementation labs and final review                            |
 
 ---
+
+
+[↑ Back to top](#top)
 
 ## 12.0 Introduction
 
@@ -177,6 +196,9 @@ High-level objectives:
   plan using /64s, /56s, etc.
 
 ---
+
+
+[↑ Back to top](#top)
 
 ## 12.1 IPv4 Issues
 
@@ -249,7 +271,7 @@ techniques:
 
 ---
 
-### 12.1.3 Check Your Understanding – IPv4 Issues
+### 12.1.3 Check Your Understanding - IPv4 Issues
 
 Quick navigation:
 
@@ -259,7 +281,7 @@ Quick navigation:
 
 ---
 
-#### Q1 – Main driver for moving to IPv6
+#### Q1 - Main driver for moving to IPv6
 
 **Exam question**
 
@@ -289,7 +311,7 @@ Options:
 
 ---
 
-#### Q2 – RIR IPv4 exhaustion statement
+#### Q2 - RIR IPv4 exhaustion statement
 
 **Exam question**
 
@@ -313,7 +335,7 @@ Options:
 
 ---
 
-#### Q3 – Which technique uses native IPv6?
+#### Q3 - Which technique uses native IPv6?
 
 **Exam question**
 
@@ -338,11 +360,14 @@ Options:
 
 ---
 
-## 12.2 IPv6 Address Representation  
+
+[↑ Back to top](#top)
+
+## 12.2 IPv6 Address Representation
 
 > **Big idea:** IPv6 addresses are 128‑bit hex strings. We almost never write the full 32 hex digits because there are rules to shorten them safely.  
 
-### 12.2.1 IPv6 Addressing Formats  
+### 12.2.1 IPv6 Addressing Formats
 
 - IPv6 address length: **128 bits**.  
 - Written as **8 groups of 16 bits** (hextets), separated by colons (`:`).  
@@ -363,7 +388,7 @@ Terminology:
 
 ---
 
-### 12.2.2 Rule 1 – Omit Leading Zeros  
+### 12.2.2 Rule 1 - Omit Leading Zeros
 
 > **Rule 1:** Within any hextet, you may **omit one or more leading `0`s**.  
 > You **must not** omit trailing zeros, or mix up the number of hex digits.  
@@ -397,7 +422,7 @@ Key points for Rule 1:
 
 ---
 
-### 12.2.3 Rule 2 – Double Colon  
+### 12.2.3 Rule 2 - Double Colon
 
 > **Rule 2:** You may replace **one single, contiguous run of all‑zero hextets** with the double colon `::`.  
 
@@ -443,12 +468,12 @@ Possible (different) expansions would be:
 
 ---
 
-### 12.2.4 Check Your Understanding – IPv6 Address Representation  
+### 12.2.4 Check Your Understanding - IPv6 Address Representation
 
 > These are practice conversions based on the 12.2.4 activity.  
 > Answers are written in lowercase, as NetAcad expects.
 
-#### Example 1  
+#### Example 1
 
 Preferred:  
 
@@ -459,7 +484,7 @@ fe80:0000:0000:0000:0000:0000:0101:1111
 - **Omit leading zeros:** `fe80:0:0:0:0:0:101:1111`  
 - **Compressed format:** `fe80::101:1111`  
 
-#### Example 2  
+#### Example 2
 
 Preferred:  
 
@@ -470,7 +495,7 @@ Preferred:
 - **Omit leading zeros:** `2001:db8:0:0:0:abcd:0:1`  
 - **Compressed format:** `2001:db8::abcd:0:1` (leftmost longest zero‑run)  
 
-#### Example 3  
+#### Example 3
 
 Preferred:  
 
@@ -487,11 +512,14 @@ Preferred:
 
 ---
 
-## 12.3 IPv6 Address Types  
+
+[↑ Back to top](#top)
+
+## 12.3 IPv6 Address Types
 
 > **Big idea:** IPv6 improves addressing by defining multiple unicast types, rich multicast, and anycast. IPv6 has **no broadcast** at all.  
 
-### 12.3.1 Unicast, Multicast, Anycast  
+### 12.3.1 Unicast, Multicast, Anycast
 
 Three broad categories of IPv6 addresses:  
 
@@ -514,7 +542,7 @@ Three broad categories of IPv6 addresses:
 
 ---
 
-### 12.3.2 IPv6 Prefix Length  
+### 12.3.2 IPv6 Prefix Length
 
 - IPv6 uses **prefix length notation** (`/n`) instead of dotted‑decimal masks.  
 - The prefix indicates the **network portion**; the remaining bits are the **interface ID** (host part).  
@@ -536,7 +564,7 @@ Why `/64` is recommended:
 
 ---
 
-### 12.3.3 Types of IPv6 Unicast Addresses  
+### 12.3.3 Types of IPv6 Unicast Addresses
 
 An IPv6 **unicast address** uniquely identifies an interface. A packet sent to a unicast address is received by that specific interface.  
 
@@ -572,7 +600,7 @@ Most IPv6 interfaces will have **at least two unicast addresses**: a **GUA** + a
 
 ---
 
-### 12.3.4 A Note About the Unique Local Address  
+### 12.3.4 A Note About the Unique Local Address
 
 Unique Local Addresses (ULAs):  
 
@@ -587,7 +615,7 @@ Unique Local Addresses (ULAs):
 
 ---
 
-### 12.3.5 IPv6 GUA  
+### 12.3.5 IPv6 GUA
 
 Global Unicast Addresses (GUAs):  
 
@@ -607,7 +635,7 @@ A typical enterprise allocation example:
 
 ---
 
-### 12.3.6 IPv6 GUA Structure  
+### 12.3.6 IPv6 GUA Structure
 
 Typical structure (for a `/64` prefix):  
 
@@ -635,7 +663,7 @@ Typical structure (for a `/64` prefix):
 
 ---
 
-### 12.3.7 IPv6 LLA  
+### 12.3.7 IPv6 LLA
 
 Link‑local addresses (LLAs):  
 
@@ -667,11 +695,11 @@ Important behaviour:
 
 ---
 
-### 12.3.8 Check Your Understanding – IPv6 Address Types  
+### 12.3.8 Check Your Understanding - IPv6 Address Types
 
 > These are the key “Check Your Understanding” ideas from 12.3.  
 
-#### Q1 – Recommended Prefix Length for Most IPv6 Subnets  
+#### Q1 - Recommended Prefix Length for Most IPv6 Subnets
 
 **Question:**  
 What is the recommended prefix length for most IPv6 subnets?  
@@ -682,7 +710,7 @@ What is the recommended prefix length for most IPv6 subnets?
 
 ---  
 
-#### Q2 – Which Part of a GUA Is Assigned by the ISP?  
+#### Q2 - Which Part of a GUA Is Assigned by the ISP?
 
 **Question:**  
 Which part of a Global Unicast Address (GUA) is assigned by the ISP?  
@@ -704,6 +732,9 @@ Options (from the activity):
 - The **customer** uses the **Subnet ID** bits under that prefix to create internal subnets.  
 
 ---
+
+
+[↑ Back to top](#top)
 
 ## 12.4 GUA and LLA Static Configuration
 
@@ -834,7 +865,7 @@ R1(config-if)# exit
 
 ---
 
-### 12.4.4 Syntax Checker – GUA and LLA Static Configuration
+### 12.4.4 Syntax Checker - GUA and LLA Static Configuration
 
 This section walks through configuring **both** LLAs and GUAs on all R1 interfaces.
 
@@ -883,7 +914,7 @@ R1(config)#  ! end of IPv6 interface config
 
 ---
 
-### 12.4.5 Packet Tracer – Basic Device Configuration
+### 12.4.5 Packet Tracer - Basic Device Configuration
 
 **Activity goal**
 
@@ -904,6 +935,9 @@ R1(config)#  ! end of IPv6 interface config
 - Testing the network and troubleshooting until **all devices can reach each other** with both protocols.
 
 ---
+
+
+[↑ Back to top](#top)
 
 ## 12.5 Dynamic Addressing for IPv6 GUAs
 
@@ -941,7 +975,7 @@ R1(config)#  ! end of IPv6 interface config
 
 ---
 
-### 12.5.2 Method 1 – SLAAC
+### 12.5.2 Method 1 - SLAAC
 
 **SLAAC = Stateless Address Autoconfiguration.**
 
@@ -962,7 +996,7 @@ R1(config)#  ! end of IPv6 interface config
 
 ---
 
-### 12.5.3 Method 2 – SLAAC and Stateless DHCPv6
+### 12.5.3 Method 2 - SLAAC and Stateless DHCPv6
 
 - Router’s RA still provides:
   - **Prefix + prefix length**
@@ -976,7 +1010,7 @@ R1(config)#  ! end of IPv6 interface config
 
 ---
 
-### 12.5.4 Method 3 – Stateful DHCPv6
+### 12.5.4 Method 3 - Stateful DHCPv6
 
 - Similar idea to **DHCP for IPv4**.
 - RA tells the host to use **stateful DHCPv6**:
@@ -989,11 +1023,11 @@ R1(config)#  ! end of IPv6 interface config
 
 ---
 
-### 12.5.5 EUI‑64 Process vs Randomly Generated Interface IDs
+### 12.5.5 EUI-64 Process vs Randomly Generated Interface IDs
 
 When a host uses SLAAC (Method 1 or 2), it must generate the **Interface ID** (last 64 bits). Two options:
 
-#### Option 1 – EUI‑64 (based on MAC address)
+#### Option 1 - EUI-64 (based on MAC address)
 
 - Start with the **48‑bit MAC address** (e.g. `fc:99:47:75:ce:e0`).
 - Split into two 24‑bit halves (OUI and device ID).
@@ -1013,7 +1047,7 @@ When a host uses SLAAC (Method 1 or 2), it must generate the **Interface ID** (l
 **Cons:**  
 - Privacy concern: IPv6 address can effectively reveal the device’s **MAC**, making long‑term tracking easier.
 
-#### Option 2 – Random 64‑bit Interface ID (Privacy Extensions)
+#### Option 2 - Random 64-bit Interface ID (Privacy Extensions)
 
 - Host generates a **random 64‑bit value** instead of using MAC.
 - Example Interface ID: `50a5:8a35:a5bb:66e1`
@@ -1034,7 +1068,7 @@ When a host uses SLAAC (Method 1 or 2), it must generate the **Interface ID** (l
 
 ---
 
-### 12.5.6 EUI‑64 Process
+### 12.5.6 EUI-64 Process
 
 This subsection is a step-by-step, exam-style view of the EUI‑64 process.
 
@@ -1052,10 +1086,10 @@ Given MAC: `fc:99:47:75:ce:e0`.
    fc:99:47:ff:fe:75:ce:e0
    ```
 
-3. Flip the 7th bit of the first byte (`fc` = `11111100` in binary):
+3. Flip the **Universal/Local (U/L) bit** in the first byte (toggle `0x02`).
 
-   - 7th bit from left is currently `1` → flip to `0`.  
-   - New first byte becomes `fe` (`11111110`).
+   - The U/L bit is the **2nd least‑significant bit** of the first byte.
+   - Example: `fc` (`11111100`) → `fe` (`11111110`) because `fc XOR 0x02 = fe`.
 
    Resulting Interface ID:
 
@@ -1091,7 +1125,7 @@ For security work, knowing this explains why:
 
 ---
 
-### 12.5.8 Check Your Understanding – Dynamic Addressing for IPv6 GUAs
+### 12.5.8 Check Your Understanding - Dynamic Addressing for IPv6 GUAs
 
 > **Question 1** – True or False?  
 > RA messages are sent to all IPv6 routers by hosts requesting addressing information.
@@ -1104,7 +1138,7 @@ For security work, knowing this explains why:
 
 ---
 
-### Quick Comparison Table – IPv6 GUA Methods
+### Quick Comparison Table - IPv6 GUA Methods
 
 | Method | Who creates the GUA?        | Where does host get prefix + default gateway? | Extra info source (DNS etc.) | Central lease DB? |
 |-------|------------------------------|-----------------------------------------------|------------------------------|-------------------|
@@ -1114,7 +1148,10 @@ For security work, knowing this explains why:
 
 ---
 
-## 12.6 Dynamic Addressing for IPv6 LLAs  
+
+[↑ Back to top](#top)
+
+## 12.6 Dynamic Addressing for IPv6 LLAs
 
 > **Big idea:** Every IPv6 interface *must* have a **link-local address (LLA)**.  
 > If you don’t configure one manually, the OS/router will **auto-generate** it.  
@@ -1123,7 +1160,7 @@ For security work, knowing this explains why:
 
 ---
 
-### 12.6.1 Dynamic LLAs  
+### 12.6.1 Dynamic LLAs
 
 All IPv6 devices must have at least one **Link-Local Address** on each
 IPv6-enabled interface. Like IPv6 GUAs, LLAs can be created **dynamically**.
@@ -1153,7 +1190,7 @@ fe80:0000:0000:0000:XXXX:XXXX:XXXX:XXXX  →  fe80::XXXX:XXXX:XXXX:XXXX
 
 ---
 
-### 12.6.2 Dynamic LLAs on Windows  
+### 12.6.2 Dynamic LLAs on Windows
 
 Operating systems such as Windows normally use the **same interface-ID method**
 for both:
@@ -1166,7 +1203,7 @@ Only the **prefix** is different:
 - GUA → something like `2001:db8:acad:1::/64`  
 - LLA → always `fe80::/64`
 
-#### Example – EUI-64 generated interface ID
+#### Example - EUI-64 generated interface ID
 
 ```text
 C:\> ipconfig
@@ -1187,7 +1224,7 @@ Here Windows:
   - the GUA prefix → **GUA** `2001:db8:acad:1::fc99:47ff:fe75:cee0`  
   - the LLA prefix → **LLA** `fe80::fc99:47ff:fe75:cee0`  
 
-#### Example – Random 64-bit generated interface ID
+#### Example - Random 64-bit generated interface ID
 
 ```text
 C:\> ipconfig
@@ -1208,7 +1245,7 @@ same: one ID → used once with GUA prefix, once with `fe80::/64`.
 
 ---
 
-### 12.6.3 Dynamic LLAs on Cisco Routers  
+### 12.6.3 Dynamic LLAs on Cisco Routers
 
 Cisco routers **automatically create an IPv6 LLA** whenever you assign a GUA to
 an interface.
@@ -1224,7 +1261,7 @@ This auto-generated LLA:
 - Can be a bit long and ugly, so in production many engineers choose to
   **overwrite it with a static, human-friendly LLA**.
 
-#### Example – LLA using EUI-64 on Router R1  
+#### Example - LLA using EUI-64 on Router R1
 
 ```text
 R1# show interface gigabitEthernet 0/0/0
@@ -1264,7 +1301,7 @@ Notes:
 
 ---
 
-### 12.6.4 Verify IPv6 Address Configuration  
+### 12.6.4 Verify IPv6 Address Configuration
 
 This topic glues everything together: **LLAs, GUAs, routes, and pings**.
 
@@ -1354,7 +1391,7 @@ fails, you can start checking:
 
 ---
 
-### 12.6.5 Syntax Checker – Verify IPv6 Address Configuration  
+### 12.6.5 Syntax Checker - Verify IPv6 Address Configuration
 
 This activity asks you to **enter the correct `show` command** and interpret the
 output for R1.
@@ -1401,7 +1438,7 @@ R1# ping 2001:db8:acad:1::10
 
 ---
 
-### 12.6.6 Packet Tracer – Configure IPv6 Addressing  
+### 12.6.6 Packet Tracer - Configure IPv6 Addressing
 
 **Goal of the PT activity**
 
@@ -1431,7 +1468,10 @@ R1# ping 2001:db8:acad:1::10
 
 ---
 
-## 12.7 Overview
+
+[↑ Back to top](#top)
+
+## 12.7 IPv6 Multicast Addresses
 
 ### Big picture
 
@@ -1451,6 +1491,9 @@ There are two main multicast types in this module:
 2. **Solicited-node multicast** – automatically derived per unicast address and used by Neighbor Discovery.
 
 ---
+
+
+[↑ Back to top](#top)
 
 ## 12.7.1 Assigned IPv6 Multicast Addresses
 
@@ -1477,11 +1520,14 @@ Why multicast instead of broadcast?
 
 ---
 
+
+[↑ Back to top](#top)
+
 ## 12.7.2 Well-Known IPv6 Multicast Addresses
 
 Well-known IPv6 multicast groups you must know cold:
 
-### 1. All-nodes multicast – `ff02::1`
+### 1. All-nodes multicast - `ff02::1`
 
 - Group name: **all-nodes**.  
 - Scope: **link-local** (the `02` in `ff02` indicates link-local scope).  
@@ -1494,7 +1540,7 @@ Common usage:
   - “Here is the IPv6 prefix and default gateway; here’s how to get an address.”
 - Some diagnostic tools and protocols can also use `ff02::1` when they really want to reach all nodes.
 
-### 2. All-routers multicast – `ff02::2`
+### 2. All-routers multicast - `ff02::2`
 
 - Group name: **all-routers**.  
 - Scope: **link-local**.  
@@ -1517,6 +1563,9 @@ Common usage:
 Remember: **IPv6 never broadcasts; it multicasts.**
 
 ---
+
+
+[↑ Back to top](#top)
 
 ## 12.7.3 Solicited-Node IPv6 Multicast Addresses
 
@@ -1566,11 +1615,14 @@ In practice:
 
 ---
 
-## 12.7.4 Lab – Identify IPv6 Addresses (Summary)
 
-Lab name: **12.7.4 – Lab: Identify IPv6 Addresses** fileciteturn8file0
+[↑ Back to top](#top)
 
-### Part 1 – Practice with IPv6 Address Types
+## 12.7.4 Lab - Identify IPv6 Addresses
+
+Lab name: **12.7.4 – Lab: Identify IPv6 Addresses** 
+
+### Part 1 - Practice with IPv6 Address Types
 
 Activities:
 
@@ -1589,7 +1641,7 @@ What this teaches:
 - Recognising address **type just by its prefix**.  
 - Being fluent at IPv6 **notation rules** (super important for exams and troubleshooting).
 
-### Part 2 – Examine a Host IPv6 Interface
+### Part 2 - Examine a Host IPv6 Interface
 
 Activities:
 
@@ -1614,7 +1666,7 @@ Typical findings:
 
 ---
 
-## Cheat Sheet – Addresses to Memorise
+## Cheat Sheet - Addresses to Memorise
 
 | Function                      | IPv6 Address / Prefix        | Notes                                       |
 |------------------------------|------------------------------|---------------------------------------------|
@@ -1648,15 +1700,8 @@ When I show this section in my portfolio, these are points I can explain in an i
 
 ---
 
-# CCNA – Module 12.8 IPv6 Subnetting (Study + Recruiter Notes)
 
-> **Use case:** This file is both a study guide for me (**EchoLynx**) and a
-> portfolio artifact for recruiters to see that I understand **IPv6 subnetting**
-> and how it differs from IPv4.
-
----
-
-## 12.8 Overview
+## 12.8 Subnet an IPv6 Network
 
 > **Big idea:** IPv6 was designed with subnetting in mind. Instead of “stealing”
 > host bits like in IPv4, IPv6 GUAs have a dedicated **Subnet ID** field that
@@ -1674,6 +1719,9 @@ In this section I practise:
   the subnet**.
 
 ---
+
+
+[↑ Back to top](#top)
 
 ## 12.8.1 Subnet Using the Subnet ID
 
@@ -1716,6 +1764,9 @@ done in modern designs.
 > gymnastics.”
 
 ---
+
+
+[↑ Back to top](#top)
 
 ## 12.8.2 IPv6 Subnetting Example
 
@@ -1762,6 +1813,9 @@ Here:
 > is always the Subnet ID**. You just count up in hex.
 
 ---
+
+
+[↑ Back to top](#top)
 
 ## 12.8.3 IPv6 Subnet Allocation
 
@@ -1815,12 +1869,15 @@ Design notes:
 
 ---
 
+
+[↑ Back to top](#top)
+
 ## 12.8.4 Router Configured with IPv6 Subnets
 
 On Cisco IOS, configuring IPv6 subnets looks very similar to other IPv6
 examples from this module.
 
-### Router R1 – IPv6 GUA configuration
+### Router R1 - IPv6 GUA configuration
 
 ```text
 R1(config)# interface gigabitethernet 0/0/0
@@ -1855,12 +1912,15 @@ Key takeaways:
 
 ---
 
-## 12.8.5 Check Your Understanding – Subnet an IPv6 Network
+
+[↑ Back to top](#top)
+
+## 12.8.5 Check Your Understanding - Subnet an IPv6 Network
 
 These are the mini‑quiz questions from the end of 12.8, with answers and short
 explanations.
 
-### Q1 – Was IPv6 designed with subnetting in mind?
+### Q1 - Was IPv6 designed with subnetting in mind?
 
 > **Question:**  
 > True or False? IPv6 was designed with subnetting in mind.
@@ -1876,7 +1936,7 @@ explanations.
 
 ---
 
-### Q2 – Which GUA field is used for subnetting?
+### Q2 - Which GUA field is used for subnetting?
 
 > **Question:**  
 > Which field in an IPv6 GUA is used for subnetting?
@@ -1900,7 +1960,7 @@ Options (from the quiz):
 
 ---
 
-### Q3 – Identify the Subnet ID hextet
+### Q3 - Identify the Subnet ID hextet
 
 > **Question:**  
 > Given a `/48` Global Routing Prefix and a `/64` prefix, what is the subnet
@@ -1932,7 +1992,7 @@ Options:
 
 ---
 
-### Q4 – How many Subnet ID bits?
+### Q4 - How many Subnet ID bits?
 
 > **Question:**  
 > Given a `/32` Global Routing Prefix and a `/64` prefix, how many bits are
@@ -1959,7 +2019,7 @@ Options:
 
 ---
 
-## Cheat‑Sheet Summary for Interviews
+## Cheat-Sheet Summary for Interviews
 
 Bullet points I can reuse in CVs / interviews:
 
@@ -1993,16 +2053,15 @@ Bullet points I can reuse in CVs / interviews:
 
 ---
 
-# CCNA – IPv6 Addressing (Module 12)  
-## Section 12.9 – Practice, Labs & Module Quiz
 
-> **Use case:** This file is both my personal study guide (**EchoLynx**) and a
-> portfolio artifact for recruiters. It summarises how I *apply* IPv6
-> addressing in labs and how I think about exam‑style questions.
+[↑ Back to top](#top)
 
----
+## 12.9 Module Practice and Quiz
 
-## 12.9 Overview
+> **Use case (for me + recruiters):** This final section is where I prove the theory works by
+> actually *implementing* IPv6 addressing and subnetting in labs, then verifying with
+> `show` commands and ICMPv6 tests.
+
 
 **Goal of 12.9:** Take everything from Module 12 (IPv6 addressing, LLAs, GUAs,
 multicast, subnetting) and **apply it in Packet Tracer and labs**, then finish
@@ -2023,7 +2082,10 @@ Core skills I practise here:
 
 ---
 
-## 12.9.1 Packet Tracer – Implement a Subnetted IPv6 Addressing Scheme
+
+[↑ Back to top](#top)
+
+## 12.9.1 Packet Tracer - Implement a Subnetted IPv6 Addressing Scheme
 
 **Scenario**
 
@@ -2129,7 +2191,10 @@ On PCs:
 
 ---
 
-## 12.9.2 Lab – Configure IPv6 Addresses on Network Devices
+
+[↑ Back to top](#top)
+
+## 12.9.2 Lab - Configure IPv6 Addresses on Network Devices
 
 There are two flavours here:
 
@@ -2147,7 +2212,7 @@ The typical addressing table (from the PTPM lab) looks like:
 | PC‑A   | NIC       | `2001:db8:acad:1::3`   | /64     | `fe80::1` |
 | PC‑B   | NIC       | `2001:db8:acad:a::3`   | /64     | `fe80::1` |
 
-### Part 1 – Basic Setup
+### Part 1 - Basic Setup
 
 - Cable the PCs, switch S1, and router R1 according to the topology.
 - Configure:
@@ -2156,7 +2221,7 @@ The typical addressing table (from the PTPM lab) looks like:
   - Banner MOTD
   - Disable DNS lookup, etc.
 
-### Part 2 – Manually Configure IPv6 Addresses
+### Part 2 - Manually Configure IPv6 Addresses
 
 **Step 1 – GUAs on R1**
 
@@ -2215,7 +2280,7 @@ The typical addressing table (from the PTPM lab) looks like:
 
 - Default gateway: `fe80::1` (R1’s LLA on that link).
 
-### Part 3 – Verify End‑to‑End Connectivity
+### Part 3 - Verify End-to-End Connectivity
 
 Useful commands:
 
@@ -2259,6 +2324,9 @@ Connectivity tests:
 > - Confirm behaviour via routing table and interface status.
 
 ---
+
+
+[↑ Back to top](#top)
 
 ## 12.9.3 What did I learn in this module?
 
@@ -2373,7 +2441,10 @@ version.
 
 ---
 
-# 12.9.4 Module Quiz – IPv6 Addressing (Explained Answers)
+
+[↑ Back to top](#top)
+
+## 12.9.4 Module Quiz - IPv6 Addressing
 
 > **Use case:** Quick-reference answer key for the NetAcad quiz  
 > **“12.9.4 Module Quiz – IPv6 Addressing”** with explanations that show
@@ -2387,7 +2458,7 @@ Each question below includes:
 
 ---
 
-## Q1 – Most Compressed IPv6 Address (Rules 1 and 2)
+## Q1 - Most Compressed IPv6 Address (Rules 1 and 2)
 
 **Question**
 
@@ -2425,7 +2496,7 @@ Each question below includes:
 
 ---
 
-## Q2 – Finding the /64 Prefix
+## Q2 - Finding the /64 Prefix
 
 **Question**
 
@@ -2457,7 +2528,7 @@ Each question below includes:
 
 ---
 
-## Q3 – Address Automatically Assigned When IPv6 Is Enabled
+## Q3 - Address Automatically Assigned When IPv6 Is Enabled
 
 **Question**
 
@@ -2485,7 +2556,7 @@ Each question below includes:
 
 ---
 
-## Q4 – Non-Routable, Local-Link Only Prefix
+## Q4 - Non-Routable, Local-Link Only Prefix
 
 **Question**
 
@@ -2500,7 +2571,8 @@ Each question below includes:
 - `FE80::/10` is the **link-local unicast** range. Packets with a link-local
   source or destination must **never be forwarded** by routers.
 - The other options mean:
-  - `FF00::/12` – IPv6 **multicast**.
+  - `FF00::/8` – IPv6 **multicast**.
+  - (Note: the multicast range is `ff00::/8`; if you ever see a different mask in a quiz option, treat it as “multicast”.)
   - `2001::/3` – Global Unicast (Internet-routable).
   - `FC00::/7` – Unique Local (RFC 4193 “private” style, but can be routed
     internally).
@@ -2511,7 +2583,7 @@ Each question below includes:
 
 ---
 
-## Q5 – Purpose of `ping ::1`
+## Q5 - Purpose of `ping ::1`
 
 **Question**
 
@@ -2538,7 +2610,7 @@ Each question below includes:
 
 ---
 
-## Q6 – Extracting the Interface ID
+## Q6 - Extracting the Interface ID
 
 **Question**
 
@@ -2577,7 +2649,7 @@ Each question below includes:
 
 ---
 
-## Q7 – Network Address for a /64
+## Q7 - Network Address for a /64
 
 **Question**
 
@@ -2609,7 +2681,7 @@ Each question below includes:
 
 ---
 
-## Q8 – Address Type Not Supported in IPv6
+## Q8 - Address Type Not Supported in IPv6
 
 **Question**
 
@@ -2636,7 +2708,7 @@ Each question below includes:
 
 ---
 
-## Q9 – Meaning of a Successful `ping ::1`
+## Q9 - Meaning of a Successful `ping ::1`
 
 **Question**
 
@@ -2662,7 +2734,7 @@ Each question below includes:
 
 ---
 
-## Q10 – Another Compressed IPv6 Address
+## Q10 - Another Compressed IPv6 Address
 
 **Question**
 
@@ -2702,7 +2774,7 @@ Each question below includes:
 ---
 
 
-## Q11 – Minimum IPv6 Configuration on a Router Interface
+## Q11 - Minimum IPv6 Configuration on a Router Interface
 
 **Question**
 
@@ -2739,7 +2811,7 @@ If a router interface only has `FE80::1` configured as a link-local and no GUA, 
 
 ---
 
-## Q12 – Minimum IPv6 Address Required on an Interface
+## Q12 - Minimum IPv6 Address Required on an Interface
 
 **Question**
 
@@ -2769,7 +2841,7 @@ If you see only `FE80::...` on an interface and no GUA/ULA, that interface is st
 
 ---
 
-## Q13 – Structure of an IPv6 Global Unicast Address (Choose Three)
+## Q13 - Structure of an IPv6 Global Unicast Address (Choose Three)
 
 **Question**
 
@@ -2811,7 +2883,7 @@ If you see `2001:DB8:130F:0001::1/64`:
 
 ---
 
-## Q14 – Bits Available for /64 Subnets from a /48 Prefix
+## Q14 - Bits Available for /64 Subnets from a /48 Prefix
 
 **Question**
 
@@ -2851,7 +2923,7 @@ Whenever you see a question like *“Given a /X and you want /64, how many bits 
 
 ---
 
-## Q15 – IPv6 Address Used Only on a Single Subnet
+## Q15 - IPv6 Address Used Only on a Single Subnet
 
 **Question**
 
@@ -2900,7 +2972,6 @@ If you see traffic sourced from `FE80::...`, it will **never be routed off that 
   - And explain *why* a given choice is correct or incorrect.
 
 
-
 ## Final Summary (for my CV / LinkedIn)
 
 > **IPv6 Addressing (CCNA Module 12)**  
@@ -2911,4 +2982,3 @@ If you see traffic sourced from `FE80::...`, it will **never be routed off that 
 > interface brief`, `show ipv6 route`, `ping`, and `traceroute` and I’m
 > comfortable explaining IPv6 address formats, multicast groups, and subnet
 > calculations in interviews.
-
