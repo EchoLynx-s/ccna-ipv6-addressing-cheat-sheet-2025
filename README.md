@@ -1429,13 +1429,6 @@ R1# ping 2001:db8:acad:1::10
 > link-local addressing and basic IPv6 troubleshooting.”*
 
 
-# CCNA – Module 12.7: IPv6 Multicast Addresses (2025)
-
-> **Use case:** Study notes for me (**EchoLynx**) + a portfolio artifact that shows I understand
-> how **IPv6 multicast** works (including all-nodes, all-routers, and solicited-node multicast).
-
-This section is based on **NetAcad CCNA – Module 12.7: IPv6 Multicast Addresses**.
-
 ---
 
 ## 12.7 Overview
